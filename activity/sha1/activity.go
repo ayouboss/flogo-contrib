@@ -42,7 +42,7 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	secret := context.GetInput(secretkey).([]byte)
 	signature := context.GetInput(signature).(string)
-	payload := context.GetInput(payload).(string)
+	payload := context.GetInput(payload).([]byte)
 	
 	//err = context.GetInputObject(in)
 	//if err != nil {
