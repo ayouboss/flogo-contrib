@@ -19,7 +19,7 @@ const (
 	secretkey = "secretkey"
 	payload   = "payload"
 
-	ovResult = "validated"
+	validated = "validated"
 )
 
 // MyActivity is a stub for your Activity implementation
@@ -42,7 +42,7 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	secret := context.GetInput(secretkey).([]byte)
 	signature := context.GetInput(signature).(string)
-	payload := context.GetInput(payload).(map[string]interface{})
+	payload := context.GetInput(payload).(string)
 	
 	//err = context.GetInputObject(in)
 	//if err != nil {
@@ -54,12 +54,12 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	 
 	if !verifySignature(secret, signature, payload) {
 		
-		return false, err
+		context.SetOutput(validated, false)
 	}
 	
-	result := "ok"
+	//validated := "ok"
 
-		context.SetOutput(ovResult, result)
+	context.SetOutput(validated, true)
 
 	return true, nil
 }
