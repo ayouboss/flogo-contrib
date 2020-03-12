@@ -78,9 +78,9 @@ func verifySignature(secretToken, payloadBody string, signatureToCompareWith str
 	const signaturePrefix = "sha1="
 	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
 
-	if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
-		return false
-	}
+	//if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
+	//	return false
+	//}
 	
 	signature := generateSignature(secretToken, payloadBody)
 	return subtle.ConstantTimeCompare([]byte(signature), []byte(signatureToCompareWith)) == 1
