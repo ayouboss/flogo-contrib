@@ -5,16 +5,12 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"errors"
-	"fmt"
-	"hash"
+	"io"
+	"io/ioutil"
 	"strings"
 
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
-
-	"database/sql"
-
-	_ "github.com/lib/pq"
 )
 
 // log is the default package logger
@@ -38,68 +34,37 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
-	s := context.GetInput(signature)
-	p := context.GetInput(payload)
-	k := context.GetInput(secretkey)
-	// do eval
-	validateSignature(s, p, k)
+	if hc.Signature = req.Header.Get("x-hub-signature"); len(hc.Signature) == 0 {
+		return nil, errors.New("No signature!")
+	}
+	
+	if err != nil {
+		return false, err
+	}
+	
+	log.Info(context)
 
 	return true, nil
 }
 
-//copied from https://github.com/google/go-github/blob/master/github/messages.go
 
-// genMAC generates the HMAC signature for a message provided the secret key
-// and hashFunc.
-func genMAC(message, key string, hashFunc func() hash.Hash) []byte {
-	mac := hmac.New(hashFunc, key)
-	mac.Write(message)
-	return mac.Sum(nil)
+func signBody(secret, body []byte) []byte {
+	computed := hmac.New(sha1.New, secret)
+	computed.Write(body)
+	return []byte(computed.Sum(nil))
 }
 
-// checkMAC reports whether messageMAC is a valid HMAC tag for message.
-func checkMAC(message, messageMAC, key string, hashFunc func() hash.Hash) bool {
-	expectedMAC := genMAC(message, key, hashFunc)
-	return hmac.Equal(messageMAC, expectedMAC)
-}
+func verifySignature(secret []byte, signature string, body []byte) bool {
 
-// messageMAC returns the hex-decoded HMAC tag from the signature and its
-// corresponding hash function.
-func messageMAC(signature string) ([]byte, func() hash.Hash, error) {
-	if signature == "" {
-		return nil, nil, errors.New("missing signature")
-	}
-	sigParts := strings.SplitN(signature, "=", 2)
-	if len(sigParts) != 2 {
-		return nil, nil, fmt.Errorf("error parsing signature %q", signature)
+	const signaturePrefix = "sha1="
+	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
+
+	if len(signature) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
+		return false
 	}
 
-	var hashFunc func() hash.Hash
+	actual := make([]byte, 20)
+	hex.Decode(actual, []byte(signature[5:]))
 
-	hashFunc = sha1.New
-
-	buf, err := hex.DecodeString(sigParts[1])
-	if err != nil {
-		return nil, nil, fmt.Errorf("error decoding signature %q: %v", signature, err)
-	}
-	return buf, hashFunc, nil
-}
-
-// ValidateSignature validates the signature for the given payload.
-// signature is the Facebook hash signature delivered in the X-Hub-Signature header.
-// payload is the JSON payload sent by GitHub Webhooks.
-// secretToken is the Facebook Webhook secret token.
-//
-// Facebook Messenger API docs: https://developers.facebook.com/docs/messenger-platform/webhook/
-func validateSignature(signature string, payload, secretToken string) error {
-	messageMAC, hashFunc, err := messageMAC(signature)
-	if err != nil {
-		//return err
-		return true, err
-	}
-	if !checkMAC(payload, messageMAC, secretToken, hashFunc) {
-		//return errors.New("payload signature check failed")
-		return false, nil
-	}
-	return nil
+	return hmac.Equal(signBody(secret, body), actual)
 }
