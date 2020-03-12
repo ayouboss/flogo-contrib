@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"crypto/subtle"
+	"encoding/base64"
 
 	//"github.com/project-flogo/core/data/coerce"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
