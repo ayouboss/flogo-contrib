@@ -4,7 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
-	"errors"
+	//"errors"
 	//"io"
 	//"io/ioutil"
 	"strings"
