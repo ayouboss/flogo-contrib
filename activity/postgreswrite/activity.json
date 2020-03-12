@@ -1,0 +1,40 @@
+{
+  "name": "Postgresql Insert",
+  "type": "flogo:activity",
+  "ref": "github.com/ayouboss/flogo-contrib/activity/postgreswrite",
+  "version": "0.0.1",
+  "title": "Postgres Insert",
+  "description": "Inserts data into a Postgres database",
+  "author": "ayouboss",
+  "input":[
+    {
+      "name": "driverName",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "postgres"
+      ]
+    },
+    {
+      "name": "datasourceName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparequery",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "queryvalue",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "output": [
+    {
+      "name": "result",
+      "type": "any"
+    }
+  ]
+}
