@@ -26,7 +26,7 @@
   "output": [
     {
       "name": "validated",
-      "type": "string"
+      "type": "boolean"
     }
   ]
 }
