@@ -19,7 +19,7 @@ var log = logger.GetLogger("activity-sha1")
 
 const (
 	signature     = "signature"
-	secret = "secretkey"
+	secretkey = "secretkey"
 	payload   = "payload"
 
 	ovResult = false
