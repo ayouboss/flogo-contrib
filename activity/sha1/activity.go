@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
+	"crypto/subtle"
 	"strings"
 
 	//"github.com/project-flogo/core/data/coerce"
