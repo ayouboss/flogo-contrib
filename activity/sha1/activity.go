@@ -60,10 +60,11 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	//result := "ok"
 
 	//err = context.SetOutput(ovResult, result)
-	//if err != nil {
-	//	return false, err
-	//}
+
 	context.SetOutput(ovResult, result)
+	if err != nil {
+		return false, err
+	}
 
 	return true, nil
 }
