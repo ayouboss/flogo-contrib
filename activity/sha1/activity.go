@@ -40,9 +40,9 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
-	secret := context.GetInput(secretkey)
-	signature := context.GetInput(signature)
-	payload := context.GetInput(payload)
+	secret := context.GetInput(secretkey).([]byte)
+	signature := context.GetInput(signature).(string)
+	payload := context.GetInput(payload).(string)
 	
 	//err = context.GetInputObject(in)
 	//if err != nil {
@@ -52,36 +52,37 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	//err = context.SetOutput(ovValue, bool(val))
 	
 	 
-	if !verifySignature(secret, signature, payload) {
+	//if !verifySignature(secret, payload, signature) {
 		
-		context.SetOutput(validated, false)
-	}
+	//	context.SetOutput(validated, false)
+	//}
 	
 	//validated := "ok"
 
-	context.SetOutput(validated, true)
+	context.SetOutput(validated, verifySignature(secret, payload, signature))
 
 	return true, nil
 }
 
 
-func signBody(secret, body []byte) []byte {
-	computed := hmac.New(sha1.New, secret)
-	computed.Write(body)
-	return []byte(computed.Sum(nil))
+func generateSignature(secretToken, payloadBody string) string {
+	mac := hmac.New(sha1.New, []byte(secretToken))
+	mac.Write([]byte(payloadBody))
+	expectedMAC := mac.Sum(nil)
+	return "sha1=" + hex.EncodeToString(expectedMAC)
 }
 
-func verifySignature(secret []byte, signature string, body []byte) bool {
-
+func verifySignature(secretToken, payloadBody string, signatureToCompareWith string) bool {
+	
 	const signaturePrefix = "sha1="
 	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
 
-	if len(signature) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
-		return false
+	if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) 
+		context.SetOutput(validated, true)
+		return false, err
 	}
-
-	actual := make([]byte, 20)
-	hex.Decode(actual, []byte(signature[5:]))
-
-	return hmac.Equal(signBody(secret, body), actual)
+	
+	signature := generateSignature(secretToken, payloadBody)
+	return subtle.ConstantTimeCompare([]byte(signature), []byte(signatureToCompareWith)) == 1
 }
+
