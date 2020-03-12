@@ -40,9 +40,9 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
-	secret := context.GetInput(secretkey).(string)
+	secret := context.GetInput(secretkey)
 	signature := context.GetInput(signature).(string)
-	payload := context.GetInput(payload).(map[string]interface {})
+	payload := context.GetInput(payload).(string)
 	
 	//err = context.GetInputObject(in)
 	//if err != nil {
