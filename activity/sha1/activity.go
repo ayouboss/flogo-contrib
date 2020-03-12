@@ -89,7 +89,7 @@ func verifySignature(secretToken, payloadBody string, signatureToCompareWith str
 	//	return false
 	//}
 	
-	signature := computeHmac1(secretToken, payloadBody)
+	signature := generateSignature(secretToken, payloadBody)
 	return subtle.ConstantTimeCompare([]byte(signature), []byte(signatureToCompareWith)) == 1
 }
 
