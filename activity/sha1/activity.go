@@ -9,6 +9,7 @@ import (
 	//"io/ioutil"
 	"strings"
 
+	"github.com/project-flogo/contrib/function/coerce"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
@@ -34,6 +35,10 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
+	
+	//err = context.SetOutput(ovValue, bool(val))
+	
+	err = verifySignature(coerce.toBytes(secret), signature, payload)
 	
 	if err != nil {
 		return false, err
