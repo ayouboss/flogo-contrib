@@ -31,9 +31,9 @@ func (fnSHA1) Sig() (paramTypes []data.Type, isVariadic bool) {
 
 // Eval - UUID generates a random UUID according to RFC 4122
 func (fnSHA1) Eval(params ...interface{}) (interface{}, error) {
-	s, err := coerce.ToBytes(params[0]) //signature
-	p, err := coerce.ToBytes(params[1]) //payload
-	k, err := coerce.ToBytes(params[2]) //secfret key
+	s, err := coerce.ToString(params[0]) //signature
+	p, err := coerce.ToString(params[1]) //payload
+	k, err := coerce.ToString(params[2]) //secfret key
 	
 	validateSignature(s, p, k)
 
