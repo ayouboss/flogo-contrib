@@ -1,0 +1,32 @@
+{
+  "name": "Sha1",
+  "type": "flogo:activity",
+  "ref": "github.com/ayouboss/flogo-contrib/activity/sha1",
+  "version": "0.0.1",
+  "title": "Sha1",
+  "description": "Validates based on sha1",
+  "author": "ayouboss",
+  "input":[
+    {
+      "name": "signature",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "payload",
+      "type": "any",
+      "required": true
+    },
+    {
+      "name": "secretkey",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "output": [
+    {
+      "name": "validated",
+      "type": "boolean"
+    }
+  ]
+}
