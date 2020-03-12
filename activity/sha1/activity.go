@@ -57,7 +57,7 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	//	context.SetOutput(validated, false)
 	//}
 	
-	res = verifySignature(secret, payload, signature)
+	res := verifySignature(secret, payload, signature)
 
 	context.SetOutput(validated, res)
 
