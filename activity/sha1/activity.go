@@ -22,7 +22,7 @@ const (
 	secretkey = "secretkey"
 	payload   = "payload"
 
-	ovResult = false
+	ovResult = "validated"
 )
 
 // MyActivity is a stub for your Activity implementation
