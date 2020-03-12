@@ -9,7 +9,7 @@ import (
 	//"io/ioutil"
 	"strings"
 
-	"github.com/project-flogo/core/data/coerce"
+	//"github.com/project-flogo/core/data/coerce"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
