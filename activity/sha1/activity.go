@@ -72,6 +72,13 @@ func generateSignature(secretToken, payloadBody string) string {
 	return "sha1=" + hex.EncodeToString(expectedMAC)
 }
 
+func computeHmac1(message string, secret string) string {
+	key := []byte(secret)
+	h := hmac.New(sha1.New, key)
+	h.Write([]byte(message))
+	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
 func verifySignature(secretToken, payloadBody string, signatureToCompareWith string) bool {
 	
 	const signaturePrefix = "sha1="
@@ -81,7 +88,7 @@ func verifySignature(secretToken, payloadBody string, signatureToCompareWith str
 	//	return false
 	//}
 	
-	signature := generateSignature(secretToken, payloadBody)
+	signature := computeHmac1(secretToken, payloadBody)
 	return subtle.ConstantTimeCompare([]byte(signature), []byte(signatureToCompareWith)) == 1
 }
 
