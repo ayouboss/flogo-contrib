@@ -18,7 +18,7 @@ import (
 var log = logger.GetLogger("activity-sha1")
 
 const (
-	signature     = "signature"
+	signature = "signature"
 	secretkey = "secretkey"
 	payload   = "payload"
 
@@ -43,9 +43,9 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
-	//secret := context.GetInput(secretkey)
-	//signature := context.GetInput(signature)
-	//payload := context.GetInput(payload)
+	secret := context.GetInput(secretkey)
+	signature := context.GetInput(signature)
+	payload := context.GetInput(payload)
 	
 	
 	//err = context.GetInputObject(in)
