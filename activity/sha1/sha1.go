@@ -9,34 +9,126 @@ import (
 	"hash"
 	"strings"
 
-	"github.com/project-flogo/core/data"
-	"github.com/project-flogo/core/data/coerce"
-	"github.com/project-flogo/core/data/expression/function"
+	"github.com/TIBCOSoftware/flogo-lib/core/activity"
+	"github.com/TIBCOSoftware/flogo-lib/logger"
+
+	"database/sql"
+
+	_ "github.com/lib/pq"
 )
 
-func init() {
-	function.Register(&fnSHA1{})
+// log is the default package logger
+var log = logger.GetLogger("activity-sha1")
+
+
+// MyActivity is a stub for your Activity implementation
+type MyActivity struct {
+	metadata *activity.Metadata
 }
 
-type fnSHA1 struct {
+// NewActivity creates a new AppActivity
+func NewActivity(metadata *activity.Metadata) activity.Activity {
+	return &MyActivity{metadata: metadata}
 }
 
-func (fnSHA1) Name() string {
-	return "sha1"
+// Metadata implements activity.Activity.Metadata
+func (a *MyActivity) Metadata() *activity.Metadata {
+	return a.metadata
 }
 
-func (fnSHA1) Sig() (paramTypes []data.Type, isVariadic bool) {
-	return []data.Type{}, false
-}
-
-// Eval - UUID generates a random UUID according to RFC 4122
-func (fnSHA1) Eval(params ...interface{}) (interface{}, error) {
-	s, err := coerce.ToString(params[0]) //signature
-	p, err := coerce.ToString(params[1]) //payload
-	k, err := coerce.ToString(params[2]) //secfret key
-	
+// Eval implements activity.Activity.Eval
+func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
+	s := context.GetInput(signature)
+	p := context.GetInput(payload)
+	k := context.GetInput(secretkey)
+	// do eval
 	validateSignature(s, p, k)
+	////////  Set DriverName of the driver //////////
 
+	driverNameInput := context.GetInput(driverName)
+
+	ivdriverName, ok := driverNameInput.(string)
+	if !ok {
+		context.SetOutput("result", "driverNameSET")
+		return true, fmt.Errorf("driverName not set")
+	}
+	log.Debugf("driverNamename" + ivdriverName)
+
+	////////  END - Set DriverName of the driver //////////
+
+	////////  Set connection String of the driver //////////
+
+	datasourceNameInput := context.GetInput(datasourceName)
+
+	ivdatasourceName, ok := datasourceNameInput.(string)
+	if !ok {
+		context.SetOutput("result", "datasourceNameSET")
+		return true, fmt.Errorf("datasourceName not set")
+	}
+	log.Debugf("datasourceNamename" + ivdatasourceName)
+
+	////////  END - Set connection String of the driver //////////
+
+	preparequeryInput := context.GetInput(preparequery)
+
+	ivpreparequery, ok := preparequeryInput.(string)
+	if !ok {
+		context.SetOutput("result", "QUERY_NOT_SET")
+		return true, fmt.Errorf("Query not set")
+	}
+
+	queryvalueInput := context.GetInput(queryvalue)
+
+	ivqueryvalue, ok := queryvalueInput.(string)
+	if !ok {
+		context.SetOutput("result", "QUERY_NOT_SET")
+		return true, fmt.Errorf("Query not set")
+	}
+
+	//////////////////////////////////////////////////
+
+	log.Debugf("query" + ivpreparequery)
+
+	log.Debugf("All Parameters set")
+
+	log.Debugf("Go SQL Connection Initiated...")
+
+	db, err := sql.Open(ivdriverName, ivdatasourceName)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer db.Close()
+
+	fmt.Println("Successfully Connected to Database")
+
+	//////////////////////////////////////////////////////////
+
+	// insert
+	stmt, err := db.Prepare(ivpreparequery)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	res, err := stmt.Exec(ivqueryvalue)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	//_, queryerr := db.Query(ivquery)
+
+	// if queryerr != nil {
+	// 	panic(queryerr.Error())
+	// }
+
+	context.SetOutput(ovResult, id)
+
+	return true, nil
 }
 
 //copied from https://github.com/google/go-github/blob/master/github/messages.go
