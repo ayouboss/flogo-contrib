@@ -17,6 +17,15 @@ import (
 // log is the default package logger
 var log = logger.GetLogger("activity-sha1")
 
+type Input struct {
+	Signature interface{} `md:"signature"`
+	Payload interface{} `md:"payload"`
+	SecretKey interface{} `md:"secretkey"`
+}
+
+type Output struct {
+	Value interface{} `md:"value"` // The value of the shared attribute
+}
 
 // MyActivity is a stub for your Activity implementation
 type MyActivity struct {
@@ -36,15 +45,24 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
-	//err = context.SetOutput(ovValue, bool(val))
-	
-	err = verifySignature(coerce.toBytes(secret), signature, payload)
-	
+	in := &Input{}
+	err = context.GetInputObject(in)
 	if err != nil {
 		return false, err
 	}
 	
-	log.Info(context)
+	//err = context.SetOutput(ovValue, bool(val))
+	
+	result = verifySignature(coerce.toBytes(in.SecretKey), in.Signature, in.Payload)
+	if err != nil {
+		return false, err
+	}
+	
+	err = context.SetOutput(ovResults, in)
+	if err != nil {
+		return false, err
+	}
+	
 
 	return true, nil
 }
