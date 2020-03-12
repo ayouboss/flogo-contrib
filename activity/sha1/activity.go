@@ -4,12 +4,9 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
-	//"errors"
-	//"io"
-	//"io/ioutil"
 	"strings"
 
-	//"github.com/project-flogo/core/data/coerce"
+	"github.com/project-flogo/core/data/coerce"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
@@ -55,10 +52,10 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	//err = context.SetOutput(ovValue, bool(val))
 	
-	result = verifySignature(secret, signature, payload)
-	//if err != nil {
-	//	return false, err
-	//}
+	result = verifySignature(coerce.ToBytes(secret), coerce.ToString(signature), coerce.ToBytes(payload))
+	if err != nil {
+		return false, err
+	}
 	
 	//result := "ok"
 
