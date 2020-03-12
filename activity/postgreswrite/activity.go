@@ -12,7 +12,7 @@ import (
 )
 
 // log is the default package logger
-var log = logger.GetLogger("activity-akash-Database_Query")
+var log = logger.GetLogger("activity-postgres-Database_Query")
 
 const (
 	driverName     = "driverName"
