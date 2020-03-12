@@ -5,8 +5,8 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"errors"
-	"io"
-	"io/ioutil"
+	//"io"
+	//"io/ioutil"
 	"strings"
 
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
@@ -34,9 +34,6 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
-	if hc.Signature = req.Header.Get("x-hub-signature"); len(hc.Signature) == 0 {
-		return nil, errors.New("No signature!")
-	}
 	
 	if err != nil {
 		return false, err
