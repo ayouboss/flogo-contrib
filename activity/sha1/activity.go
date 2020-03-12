@@ -19,8 +19,8 @@ var log = logger.GetLogger("activity-sha1")
 
 const (
 	signature     = "signature"
-	secret = "secret"
-	payload   = "preparequery"
+	secret = "secretkey"
+	payload   = "payload"
 
 	ovResult = false
 )
@@ -44,11 +44,11 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	secret := context.GetInput(secretkey)
-	signature := context.GetInput(secretkey)
-	payload := context.GetInput(secretkey)
+	signature := context.GetInput(signature)
+	payload := context.GetInput(payload)
 	
 	
-	err = context.GetInputObject(in)
+	//err = context.GetInputObject(in)
 	//if err != nil {
 	//	return false, err
 	//}
