@@ -9,7 +9,7 @@ import (
 	//"io/ioutil"
 	"strings"
 
-	"github.com/project-flogo/contrib/function/coerce"
+	"github.com/project-flogo/core/data/coerce"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
@@ -17,15 +17,13 @@ import (
 // log is the default package logger
 var log = logger.GetLogger("activity-sha1")
 
-type Input struct {
-	Signature interface{} `md:"signature"`
-	Payload interface{} `md:"payload"`
-	SecretKey interface{} `md:"secretkey"`
-}
+const (
+	signature     = "signature"
+	secret = "secret"
+	payload   = "preparequery"
 
-type Output struct {
-	Value interface{} `md:"value"` // The value of the shared attribute
-}
+	ovResult = false
+)
 
 // MyActivity is a stub for your Activity implementation
 type MyActivity struct {
@@ -45,24 +43,27 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
-	in := &Input{}
+	secret := context.GetInput(secretkey)
+	signature := context.GetInput(secretkey)
+	payload := context.GetInput(secretkey)
+	
+	
 	err = context.GetInputObject(in)
-	if err != nil {
-		return false, err
-	}
+	//if err != nil {
+	//	return false, err
+	//}
 	
 	//err = context.SetOutput(ovValue, bool(val))
 	
-	result = verifySignature(coerce.toBytes(in.SecretKey), in.Signature, in.Payload)
+	result = verifySignature(coerce.toBytes(secret), signature, payload)
 	if err != nil {
 		return false, err
 	}
 	
-	err = context.SetOutput(ovResults, in)
+	err = context.SetOutput(ovResult, result)
 	if err != nil {
 		return false, err
 	}
-	
 
 	return true, nil
 }
