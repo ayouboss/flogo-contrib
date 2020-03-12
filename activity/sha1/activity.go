@@ -44,7 +44,6 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	signature := context.GetInput(signature)
 	payload := context.GetInput(payload)
 	
-	
 	//err = context.GetInputObject(in)
 	//if err != nil {
 	//	return false, err
@@ -52,14 +51,12 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	//err = context.SetOutput(ovValue, bool(val))
 	
-	result = verifySignature(coerce.ToBytes(secret), coerce.ToString(signature), coerce.ToBytes(payload))
+	result = verifySignature(coerce.ToBytes(secret), signature, coerce.ToBytes(payload))
 	if err != nil {
 		return false, err
 	}
 	
 	//result := "ok"
-
-	//err = context.SetOutput(ovResult, result)
 
 	context.SetOutput(ovResult, result)
 	if err != nil {
