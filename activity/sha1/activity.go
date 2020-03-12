@@ -78,8 +78,7 @@ func verifySignature(secretToken, payloadBody string, signatureToCompareWith str
 	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
 
 	if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
-		context.SetOutput(validated, true)
-		return false, err
+		return false
 	}
 	
 	signature := generateSignature(secretToken, payloadBody)
