@@ -51,7 +51,7 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	//err = context.SetOutput(ovValue, bool(val))
 	
-	result = verifySignature(coerce.ToBytes(secret), signature, coerce.ToBytes(payload))
+	result = verifySignature(secret, signature, payload)
 	if err != nil {
 		return false, err
 	}
