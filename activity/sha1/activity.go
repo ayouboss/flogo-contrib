@@ -43,9 +43,9 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
-	secret := context.GetInput(secretkey)
-	signature := context.GetInput(signature)
-	payload := context.GetInput(payload)
+	//secret := context.GetInput(secretkey)
+	//signature := context.GetInput(signature)
+	//payload := context.GetInput(payload)
 	
 	
 	//err = context.GetInputObject(in)
@@ -55,12 +55,12 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	//err = context.SetOutput(ovValue, bool(val))
 	
-	result = verifySignature(coerce.toBytes(secret), signature, payload)
+	//result = verifySignature(coerce.toBytes(secret), signature, payload)
 	//if err != nil {
 	//	return false, err
 	//}
 	
-	//result := "ok"
+	result := "ok"
 
 	//err = context.SetOutput(ovResult, result)
 	//if err != nil {
