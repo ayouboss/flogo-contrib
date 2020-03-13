@@ -100,6 +100,8 @@ func verifySignature(secretToken, payloadBody string, signatureToCompareWith str
 	
 	log.Info("signature is...")
 	log.Info(signature)
+	log.Info("signature to compare")
+	log.Info(signatureToCompareWith)
 	return subtle.ConstantTimeCompare([]byte(signature), []byte(signatureToCompareWith)) == 1
 }
 
