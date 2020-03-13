@@ -86,11 +86,18 @@ func verifyFBSignature(secret []byte, signature string, body []byte) bool {
 	if len(signature) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
 		return false
 	}
+	
+	
 
 
 
 	actual := make([]byte, 20)
 	hex.Decode(actual, []byte(signature[5:]))
+	
+	log.Info("actal...")
+	log.Info(actual)
+	log.Info("signature to compare")
+	log.Info(signBody(secret, body))
 	
 	return hmac.Equal(signBody(secret, body), actual)
 }
