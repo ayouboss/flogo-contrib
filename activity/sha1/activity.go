@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"crypto/subtle"
 	"encoding/base64"
+	"strings"
 
 	//"github.com/project-flogo/core/data/coerce"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
