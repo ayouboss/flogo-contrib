@@ -62,7 +62,7 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	
 	log.Info("Verifying Signature")
 	log.Info(payload)
-	res := verifyFBSignature([]byte(secret), signature ,[]byte(payload))
+	res := verifySignature([]byte(secret), signature ,[]byte(payload))
 
 	context.SetOutput(validated, res)
 
