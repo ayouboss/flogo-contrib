@@ -70,7 +70,8 @@ func generateSignature(secretToken, payloadBody string) string {
 	mac := hmac.New(sha1.New, []byte(secretToken))
 	mac.Write([]byte(payloadBody))
 	expectedMAC := mac.Sum(nil)
-	return "sha1=" + hex.EncodeToString(expectedMAC)
+	//return "sha1=" + hex.EncodeToString(expectedMAC)
+	return hex.EncodeToString(expectedMAC)
 }
 
 func computeHmac1(message string, secret string) string {
