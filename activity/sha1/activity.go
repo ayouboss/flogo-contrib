@@ -92,7 +92,7 @@ func verifySignature(secretToken, payloadBody string, signatureToCompareWith str
 	
 	log.Info(signatureToCompareWith)
 
-	if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
+	if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signatureToCompareWith, signaturePrefix) {
 		return false
 	}
 	
