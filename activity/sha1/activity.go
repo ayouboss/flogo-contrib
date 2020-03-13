@@ -4,8 +4,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
-	"crypto/subtle"
-	"encoding/base64"
 	"strings"
 
 	//"github.com/project-flogo/core/data/coerce"
@@ -46,35 +44,17 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	signature := context.GetInput(signature).(string)
 	payload := context.GetInput(payload).(string)
 	
-	//err = context.GetInputObject(in)
-	//if err != nil {
-	//	return false, err
-	//}
-	
-	//err = context.SetOutput(ovValue, bool(val))
-	
-	 
-	//if !verifySignature(secret, payload, signature) {
-		
-	//	context.SetOutput(validated, false)
-	//}
-	
-	
 	log.Info("Verifying Signature")
-	log.Info(payload)
-	res := verifySignature(secret, payload, signature)
+	res := verifyFBSignature([]byte(secret), signature, []byte(payload))
 
 	context.SetOutput(validated, res)
 
 	return true, nil
 }
 
-
-
 func signBody(secret, body []byte) []byte {
 	computed := hmac.New(sha1.New, secret)
 	computed.Write(body)
-	
 	return []byte(computed.Sum(nil))
 }
 
@@ -86,56 +66,9 @@ func verifyFBSignature(secret []byte, signature string, body []byte) bool {
 	if len(signature) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
 		return false
 	}
-	
-	
-
-
 
 	actual := make([]byte, 20)
 	hex.Decode(actual, []byte(signature[5:]))
 	
-	log.Info("actal...")
-	log.Info(actual)
-	log.Info("signature to compare")
-	log.Info(signBody(secret, body))
-	
 	return hmac.Equal(signBody(secret, body), actual)
 }
-
-
-
-func generateSignature(secretToken, payloadBody string) string {
-	mac := hmac.New(sha1.New, []byte(secretToken))
-	mac.Write([]byte(payloadBody))
-	expectedMAC := mac.Sum(nil)
-	return "sha1=" + hex.EncodeToString(expectedMAC)
-	//return hex.EncodeToString(expectedMAC)
-}
-
-func computeHmac1(message string, secret string) string {
-	key := []byte(secret)
-	h := hmac.New(sha1.New, key)
-	h.Write([]byte(message))
-	return base64.StdEncoding.EncodeToString(h.Sum(nil))
-}
-
-func verifySignature(secretToken, payloadBody string, signatureToCompareWith string) bool {
-	
-	const signaturePrefix = "sha1="
-	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
-	
-	log.Info(signatureToCompareWith)
-
-	if len(signatureToCompareWith) != signatureLength || !strings.HasPrefix(signatureToCompareWith, signaturePrefix) {
-		return false
-	}
-	
-	signature := generateSignature(secretToken, payloadBody)
-	
-	log.Info("signature is...")
-	log.Info(signature)
-	log.Info("signature to compare")
-	log.Info(signatureToCompareWith)
-	return subtle.ConstantTimeCompare([]byte(signature), []byte(signatureToCompareWith)) == 1
-}
-
